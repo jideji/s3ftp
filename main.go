@@ -8,6 +8,8 @@ import (
 	"github.com/aws/aws-sdk-go/service/s3"
 	"github.com/fclairamb/ftpserver/server"
 	"github.com/jideji/s3ftp/driver"
+	log "github.com/sirupsen/logrus"
+	"gopkg.in/inconshreveable/log15.v2"
 	"os"
 	"strconv"
 )
@@ -40,6 +42,10 @@ func getEnvInt(key string, defaultValue int) int {
 }
 
 func main() {
+	log15.Root().SetHandler(log15.StreamHandler(os.Stdout, log15.JsonFormat()))
+	log.SetFormatter(&log.JSONFormatter{})
+	log.SetOutput(os.Stdout)
+
 	host := getEnv("FTP_HOST", "localhost")
 	port := getEnvInt("FTP_PORT", 21)
 	s3BucketName := mustGetEnv("S3_BUCKET_NAME")
