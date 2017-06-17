@@ -1,8 +1,7 @@
 package: github.com/jideji/s3ftp
 import:
-- package: github.com/antigloss/go
-  subpackages:
-  - logger
+- package: github.com/sirupsen/logrus
+  version: v1.0.0
 - package: github.com/aws/aws-sdk-go
   version: ^1.8.43
   subpackages:

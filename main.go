@@ -12,6 +12,14 @@ import (
 	"strconv"
 )
 
+func getEnv(key string, defaultValue string) string {
+	value, ok := os.LookupEnv(key)
+	if !ok {
+		return defaultValue
+	}
+	return value
+}
+
 func mustGetEnv(key string) string {
 	value, ok := os.LookupEnv(key)
 	if !ok {
@@ -32,6 +40,7 @@ func getEnvInt(key string, defaultValue int) int {
 }
 
 func main() {
+	host := getEnv("FTP_HOST", "localhost")
 	port := getEnvInt("FTP_PORT", 21)
 	s3BucketName := mustGetEnv("S3_BUCKET_NAME")
 	ftpUsername := mustGetEnv("FTP_USER")
@@ -40,7 +49,7 @@ func main() {
 	sess := session.Must(session.NewSession())
 	creds := credentials.NewEnvCredentials()
 	svc := s3.New(sess, &aws.Config{Credentials: creds})
-	s3 := driver.NewS3Driver(svc, port, ftpUsername, ftpPassword, s3BucketName)
+	s3 := driver.NewS3Driver(svc, host, port, ftpUsername, ftpPassword, s3BucketName)
 	ftpServer := server.NewFtpServer(&s3)
 	panic(ftpServer.ListenAndServe())
 }
